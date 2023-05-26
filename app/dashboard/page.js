@@ -57,6 +57,12 @@ export default function Dashboard() {
         <>
             <Script src="https://cdn.datatables.net/v/dt/jq-3.6.0/dt-1.13.4/datatables.min.js" />
             <Link href="https://cdn.datatables.net/v/dt/jq-3.6.0/dt-1.13.4/datatables.min.css" />
+            <div className="pt-4 px-8 bg-[rgb(250,250,250)] flex items-center lg:justify-between ">
+                <img src="./ppa.png" width="200px"/>
+                <p className="text-sm text-sub text-right">Data per tanggal 
+                    <p className="mt-1"><strong>{new Date().toLocaleDateString('fr-CA')}</strong></p>
+                </p>
+            </div>
             <div className="flex flex-col bg-[rgb(250,250,250)] gap-3 px-5 py-5 lg:flex-row lg:px-10">
                 <div title="Click for detail" className="bg-white cursor-pointer p-5 flex-1 rounded-md shadow-sm hover:translate-y-[-0.2em]">
                     <h1 className="flex justify-between align-center">
@@ -134,6 +140,9 @@ export default function Dashboard() {
                         <a>Detail</a>
                     </div>
                 </div>
+            </div>
+            <div>
+                <h1>Detail Unit </h1>
             </div>
             <div className="px-[5%] overflow-auto">
                 <div className="w-100 ">
