@@ -58,7 +58,7 @@ export default function Dashboard() {
             <Script src="https://cdn.datatables.net/v/dt/jq-3.6.0/dt-1.13.4/datatables.min.js" />
             <Link href="https://cdn.datatables.net/v/dt/jq-3.6.0/dt-1.13.4/datatables.min.css" />
             <div className="bg-[rgb(250,250,250)] px-10 py-10 flex gap-5">
-                <div className="bg-white p-5 flex-1 rounded-md shadow-sm">
+                <div className="bg-white cursor-pointer p-5 flex-1 rounded-md shadow-sm">
                     <h1 className="flex justify-between align-center">
                         <span className="text-orange font-semibold"><i className="fa-solid fa-user-clock text-orange"></i> No Operator</span>
                         <span className="font-semibold text-xl text-orange">{data.length ? (_.sumBy(data, 'no_operator') / (_.sumBy(data, 'breakdown') + _.sumBy(data, 'ready') ) *100).toFixed(2) : 0}%</span>
@@ -74,7 +74,7 @@ export default function Dashboard() {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white p-5 flex-1 rounded-md shadow-sm">
+                <div className="bg-white cursor-pointer p-5 flex-1 rounded-md shadow-sm">
                     <h1 className="flex justify-between align-center">
                         <span className="text-hijau font-semibold"><i className="fa-solid fa-circle-check text-hijau"></i> Ready</span>
                         <span className="font-semibold text-xl text-hijau">{data.length ? (_.sumBy(data, 'ready') / (_.sumBy(data, 'breakdown') + _.sumBy(data, 'ready') ) *100).toFixed(2) : 0}%</span>
@@ -90,7 +90,7 @@ export default function Dashboard() {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white p-5 flex-1 rounded-md shadow-sm">
+                <div className="bg-white cursor-pointer p-5 flex-1 rounded-md shadow-sm">
                     <h1 className="flex justify-between align-center">
                         <span className="text-merah font-semibold"><i className="fa-solid fa-triangle-exclamation text-merah"></i> Breakdown</span>
                         <span className="font-semibold text-xl text-merah">{data.length ? (_.sumBy(data, 'breakdown') / (_.sumBy(data, 'breakdown') + _.sumBy(data, 'ready') ) *100).toFixed(2) : 0}%</span>
@@ -106,7 +106,7 @@ export default function Dashboard() {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white p-5 flex-1 rounded-md shadow-sm">
+                <div className="bg-white cursor-pointer p-5 flex-1 rounded-md shadow-sm">
                     <h1 className="flex justify-between align-center">
                         <span className="text-biruhov font-semibold"><i className="fa-solid fa-clipboard-check text-biruhov"></i> Operator Status</span>
                         <span className="font-semibold text-xl text-biruhov">{data.length ? (_.sumBy(data, 'start_operasi') / _.sumBy(data, 'total_opt') *100).toFixed(2) : 0}%</span>
