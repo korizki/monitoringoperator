@@ -3966,6 +3966,7 @@ export default function Dashboard() {
     const [listAllUnit, setListAllUnit] = useState([])
     const [listFilteredUnitByStatus, setListFilteredUnitByStatus] = useState([])
     const [totalUnitDetail, setTotalUnitDetail] = useState(0)
+    // convert data format
     const processData = allData => {
         const { detailBreakDown, detailOpration, detailStandby, population, totalBreakdown, totalOpration, totalStanby } = allData
         // membuat array baru penampung all data 
@@ -4019,8 +4020,15 @@ export default function Dashboard() {
         allListUnitByStatus = allListUnitByStatus.filter(it => it.abc_activity == 'Overburden' || it.abc_activity == 'Coal Hauling' || it.abc_activity == 'Coal Getting')
         setListAllUnit(allListUnitByStatus)
     }
+    // get data dari url api
     const getDataFromAPI = () => {
-        processData(res.data)
+        $.ajax({
+            url: `http://api32.ppa-bib.net/v1/report/summary/equpment?date=${new Date().toLocaleDateString('fr-CA')}`,
+            method: 'GET',
+            success: data => {
+                processData(data.data)
+            }
+        })
     }
     // create table summary by model
     useEffect(() => {
@@ -4107,12 +4115,12 @@ export default function Dashboard() {
                     className="bg-white cursor-pointer p-5 flex-1 rounded-md shadow-sm hover:translate-y-[-0.2em]">
                     <h1 className="flex justify-between align-center">
                         <span className="text-emerald-500 font-semibold"><i className="fa-solid fa-circle-check text-emerald-500"></i> Ready</span>
-                        <span className="font-semibold text-xl text-emerald-500">{listData.length ? (_.sumBy(listData, 'ready') / (_.sumBy(listData, 'breakdown') + _.sumBy(listData, 'ready')) * 100).toFixed(2) : 0}%</span>
+                        <span className="font-semibold text-xl text-emerald-500">{listData.length ? (_.sumBy(listData, 'ready') / listAllUnit.length * 100).toFixed(2) : 0}%</span>
                     </h1>
                     <div title="Click for detail" className="my-1 flex justify-between">
                         <div>
-                            <p className="text-slate-400 text-sm">Total All Unit</p>
-                            <h1 className="font-semibold">{_.sumBy(listData, 'breakdown') + _.sumBy(listData, 'ready')}</h1>
+                            <p className="text-slate-400 text-sm">All Unit</p>
+                            <h1 className="font-semibold">{listAllUnit.length}</h1>
                         </div>
                         <div className="text-right">
                             <p className="text-slate-400 text-sm">Ready</p>
@@ -4130,12 +4138,12 @@ export default function Dashboard() {
                 >
                     <h1 className="flex justify-between align-center">
                         <span className="text-orange-400 font-semibold"><i className="fa-solid fa-user-clock text-orange-400"></i> Running </span>
-                        <span className="font-semibold text-xl text-orange-400">{listData.length ? (_.sumBy(listData, 'start_operasi') / (_.sumBy(listData, 'breakdown') + _.sumBy(listData, 'ready')) * 100).toFixed(2) : 0}%</span>
+                        <span className="font-semibold text-xl text-orange-400">{listData.length ? (_.sumBy(listData, 'start_operasi') / listAllUnit.length * 100).toFixed(2) : 0}%</span>
                     </h1>
                     <div className="my-1 flex justify-between">
                         <div>
-                            <p className="text-slate-400 text-sm">Total Unit</p>
-                            <h1 className="font-semibold">{_.sumBy(listData, 'breakdown') + _.sumBy(listData, 'ready')}</h1>
+                            <p className="text-slate-400 text-sm">All Unit</p>
+                            <h1 className="font-semibold">{listAllUnit.length}</h1>
                         </div>
                         <div className="text-right">
                             <p className="text-slate-400 text-sm"> Running/Operating</p>
@@ -4153,12 +4161,12 @@ export default function Dashboard() {
                 >
                     <h1 className="flex justify-between align-center">
                         <span className="text-rose-500 font-semibold"><i className="fa-solid fa-triangle-exclamation text-rose-500"></i> Breakdown</span>
-                        <span className="font-semibold text-xl text-rose-500">{listData.length ? (_.sumBy(listData, 'breakdown') / (_.sumBy(listData, 'breakdown') + _.sumBy(listData, 'ready')) * 100).toFixed(2) : 0}%</span>
+                        <span className="font-semibold text-xl text-rose-500">{listData.length ? (_.sumBy(listData, 'breakdown') / listAllUnit.length * 100).toFixed(2) : 0}%</span>
                     </h1>
                     <div className="my-1 flex justify-between">
                         <div>
-                            <p className="text-slate-400 text-sm">Total All Unit</p>
-                            <h1 className="font-semibold">{_.sumBy(listData, 'breakdown') + _.sumBy(listData, 'ready')}</h1>
+                            <p className="text-slate-400 text-sm">All Unit</p>
+                            <h1 className="font-semibold">{listAllUnit.length}</h1>
                         </div>
                         <div className="text-right">
                             <p className="text-slate-400 text-sm">Breakdown</p>
@@ -4176,12 +4184,12 @@ export default function Dashboard() {
                 >
                     <h1 className="flex justify-between align-center">
                         <span className="text-sky-600 font-semibold"><i className="fa-solid fa-clipboard-check text-sky-600"></i> Standby</span>
-                        <span className="font-semibold text-xl text-sky-600">{listData.length ? (_.sumBy(listData, 'no_operator') / _.sumBy(listData, 'ready') * 100).toFixed(2) : 0}%</span>
+                        <span className="font-semibold text-xl text-sky-600">{listData.length ? (_.sumBy(listData, 'no_operator') / listAllUnit.length * 100).toFixed(2) : 0}%</span>
                     </h1>
                     <div className="my-1 flex justify-between">
                         <div>
-                            <p className="text-slate-400 text-sm">Total All Unit</p>
-                            <h1 className="font-semibold">{_.sumBy(listData, 'breakdown') + _.sumBy(listData, 'ready')}</h1>
+                            <p className="text-slate-400 text-sm">All Unit</p>
+                            <h1 className="font-semibold">{listAllUnit.length}</h1>
                         </div>
                         <div className="text-right">
                             <p className="text-slate-400 text-sm">Standby</p>
