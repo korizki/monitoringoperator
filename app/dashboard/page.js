@@ -3982,9 +3982,18 @@ export default function Dashboard() {
             function getListUnit(data){
                 return data.length > 0 ? data[0].detailUnit : []
             }
+            function filterByActivityCoalOB(data){
+                return data.filter(it => it.abc_activity == 'Overburden' || it.abc_activity == 'Coal Hauling' || it.abc_activity == 'Coal Getting' )
+            }
             let listBreakdown = getListUnit(filteredDataByModel.filter(it => it.status == 'Breakdown')) 
+            // filter hanya activity ob dan coal
+            listBreakdown = filterByActivityCoalOB(listBreakdown)
             let listStandby = getListUnit(filteredDataByModel.filter(it => it.status == 'Standby'))
+            listStandby = filterByActivityCoalOB(listStandby)
+            // filter hanya activity ob dan coal
             let listOperasi = getListUnit(filteredDataByModel.filter(it => it.status == 'Ready'))
+            listOperasi = filterByActivityCoalOB(listOperasi)
+            // filter hanya activity ob dan coal
             let total_opt = listOperasi.length
             return {
                 model,
@@ -4006,6 +4015,8 @@ export default function Dashboard() {
                 allListUnitByStatus.push({...unit, status: it.status, model: it.model})
             })
         })
+        // filter unit activity ob dan coal
+        allListUnitByStatus = allListUnitByStatus.filter(it => it.abc_activity == 'Overburden' || it.abc_activity == 'Coal Hauling' || it.abc_activity == 'Coal Getting')
         setListAllUnit(allListUnitByStatus)
     }
     const getDataFromAPI = () => {
