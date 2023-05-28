@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "autoprefixer": "10.4.14",
-    "datatables.net-dt": "^1.13.4",
+    "datatables.net": "^1.13.4",
     "jquery": "^3.7.0",
     "next": "13.4.3",
     "postcss": "8.4.23",

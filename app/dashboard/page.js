@@ -1,12 +1,12 @@
-"use client"
+'use client'
 import { useState, useEffect } from 'react'
-import DataTables from 'datatables.net-dt'
 import Script from 'next/script'
 import Link from 'next/link'
-import "datatables.net-dt/css/jquery.dataTables.min.css";
 import $ from 'jquery'
 import _ from 'lodash'
 import Footer from '@/components/Footer'
+import dynamic from 'next/dynamic'
+const Table = dynamic(() => import('@/components/Table'), {ssr: false}) 
 
 export default function Dashboard() {
     const [data, listData] = useState([
@@ -27,9 +27,10 @@ export default function Dashboard() {
             no_operator: 10
         },
     ])
+    const [tConfig, setTConfig] = useState(null)
     const [detailSum, setDetailSum] = useState('No Operator')
-    const createTableSummary = data => {
-        $('#tsummary').DataTable({
+    useEffect(() => {
+        setTConfig({
             destroy: true,
             data,
             columns: [
@@ -51,14 +52,9 @@ export default function Dashboard() {
                 },
             ]
         })
-    }
-    useEffect(() => {
-       createTableSummary(data)
     }, [data])
     return (
         <>
-            <Script src="https://cdn.datatables.net/v/dt/jq-3.6.0/dt-1.13.4/datatables.min.js" />
-            <Link href="https://cdn.datatables.net/v/dt/jq-3.6.0/dt-1.13.4/datatables.min.css" />
             <div className="py-2 pt-6 px-8 bg-slate-100 flex items-center lg:justify-between ">
                 <img src="./ppa.png" width="200px"/>
                 <div className="text-xs text-slate-400 text-right">Data per tanggal 
@@ -162,9 +158,9 @@ export default function Dashboard() {
                 <h1 className="text-xl"><i className="fa-solid fa-book"></i> Detail  <span className="text-biru">{detailSum}</span></h1>
             </div>
             <div className="p-10">
-                <h1 className="text-xl"><i className="fa-solid fa-clipboard-list"></i> List Unit </h1>
+                <h1 className="text-xl"><i className="fa-solid fa-clipboard-list"></i> List Model </h1>
                 <div className="w-100 ">
-                    <table id="tsummary"></table>
+                    <Table data={data} config={tConfig}/>
                 </div>
             </div> 
             <Footer />
