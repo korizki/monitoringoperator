@@ -14,3 +14,5 @@ export default function Table(props){
         <table id="tsummary"></table>
     )
 }
+
+// push ke repo rizki
