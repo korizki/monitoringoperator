@@ -14,5 +14,3 @@ export default function Table(props){
         <table id={el} className="datatablet"></table>
     )
 }
-
-// push ke repo rizki
