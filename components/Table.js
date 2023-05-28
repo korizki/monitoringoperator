@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import 'datatables.net'
-import "datatables.net-dt/css/jquery.dataTables.min.css";
 import $ from 'jquery'
 
 export default function Table(props){
