@@ -4,14 +4,14 @@ import 'datatables.net-dt/css/jquery.dataTables.min.css'
 import $ from 'jquery'
 
 export default function Table(props){
-    const {data, config} = props
+    const {data, config, el} = props
     useEffect(() => {
         if(config != null ){
-            $('#tsummary').DataTable(config)
+            $(`#${el}`).DataTable(config)
         }
     }, [config])
     return (
-        <table id="tsummary" className="datatablet"></table>
+        <table id={el} className="datatablet"></table>
     )
 }
 

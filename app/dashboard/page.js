@@ -3961,7 +3961,11 @@ export default function Dashboard() {
     })
     const [listData, setListData] = useState([])
     const [tConfig, setTConfig] = useState(null)
-    const [detailSum, setDetailSum] = useState('No Operator')
+    const [tConfigAllUnit, setTConfigAllunit] = useState(null)
+    const [detailSum, setDetailSum] = useState('Breakdown')
+    const [listAllUnit, setListAllUnit] = useState([])
+    const [listFilteredUnitByStatus, setListFilteredUnitByStatus] = useState([])
+    const [totalUnitDetail, setTotalUnitDetail] = useState(0)
     const processData = allData => {
         const { detailBreakDown, detailOpration, detailStandby, population, totalBreakdown, totalOpration, totalStanby } = allData
         // membuat array baru penampung all data 
@@ -3995,11 +3999,19 @@ export default function Dashboard() {
             }
         })
         setListData(dataAllModel)
-        console.log(dataAllModel)
+        // set list All Unit by status
+        let allListUnitByStatus = []
+        newArr.forEach(it => {
+            it.detailUnit.length && it.detailUnit.forEach(unit => {
+                allListUnitByStatus.push({...unit, status: it.status, model: it.model})
+            })
+        })
+        setListAllUnit(allListUnitByStatus)
     }
     const getDataFromAPI = () => {
         processData(res.data)
     }
+    // create table summary by model
     useEffect(() => {
         // konfigurasi datatable list model
         setTConfig({
@@ -4011,7 +4023,7 @@ export default function Dashboard() {
                 { data: 'breakdown', title: 'Breakdown' },
                 { data: 'total_opt', title: 'Total Operator' },
                 { data: 'start_operasi', title: 'Start Operasi' },
-                { data: 'no_operator', title: 'No Operator' },
+                { data: 'no_operator', title: 'Stby / No Operator' },
             ],
             order: [[5,'desc']],
             columnDefs: [
@@ -4026,6 +4038,43 @@ export default function Dashboard() {
             ]
         })
     }, [listData])
+    // create table list unit detail
+    useEffect(() => {
+        let filtered = listAllUnit.filter(it => detailSum == 'Ready' ? (it.status == 'Standby' || it.status == 'Ready' ) : detailSum == 'Operating' ? it.status == 'Ready'  : it.status == detailSum)
+        // set data unit filter by status
+        setListFilteredUnitByStatus(filtered)
+        setTotalUnitDetail(filtered.length)
+    }, [listAllUnit, detailSum])
+    useEffect(() => {
+        setTConfigAllunit({
+            destroy: true,
+            data: listFilteredUnitByStatus,
+            columns: [
+                { data: 'codeNumber', title: 'Unit Number' },
+                { data: 'model', title: 'Model' },
+                { data: 'status', title: 'Status' },
+                { data: 'abc_activity', title: 'Activity' },
+                { data: 'abc_sub_activity', title: 'Sub Activity' },
+                { data: 'abc_type', title: 'Type' },
+            ],
+            order: [[5,'desc']],
+            columnDefs: [
+                {
+                    targets: [ 2, 3, 4, 5],
+                    className: "text-center"
+                },
+                {
+                    targets: [2],
+                    render: function(data){
+                        return `<label class="text-xs py-1 px-2 rounded  text-white ${data == 'Breakdown' ? 'bg-rose-500' : data == 'Standby' ? 'bg-sky-500' : 'bg-emerald-500' }">${data}</label>`
+                    }
+                },
+            ]
+        })
+        setTimeout(() => {
+            window.location.href= '#detail'
+        },100)
+    }, [listFilteredUnitByStatus])
     // first load 
     useEffect(() => {
         getDataFromAPI()
@@ -4038,30 +4087,7 @@ export default function Dashboard() {
                     <p className=" text-lg"><strong className="text-cyan-700">{new Date().toLocaleDateString('fr-CA')}</strong></p>
                 </div>
             </div>
-            <div className="flex flex-col bg-slate-100 gap-5 px-5 py-5 lg:flex-row lg:px-10">
-                <div
-                    title="Click for detail"
-                    className="bg-white cursor-pointer p-5 flex-1 rounded-md shadow-sm hover:translate-y-[-0.2em]"
-                    onClick={() => setDetailSum('No Operator')}
-                >
-                    <h1 className="flex justify-between align-center">
-                        <span className="text-orange-400 font-semibold"><i className="fa-solid fa-user-clock text-orange-400"></i> No Operator</span>
-                        <span className="font-semibold text-xl text-orange-400">{listData.length ? (_.sumBy(listData, 'no_operator') / (_.sumBy(listData, 'breakdown') + _.sumBy(listData, 'ready')) * 100).toFixed(2) : 0}%</span>
-                    </h1>
-                    <div className="my-1 flex justify-between">
-                        <div>
-                            <p className="text-slate-400 text-sm">Total Unit</p>
-                            <h1 className="font-semibold">{_.sumBy(listData, 'breakdown') + _.sumBy(listData, 'ready')}</h1>
-                        </div>
-                        <div className="text-right">
-                            <p className="text-slate-400 text-sm"> No Operator</p>
-                            <h1 className="font-semibold">{_.sumBy(listData, 'no_operator')}</h1>
-                        </div>
-                    </div>
-                    <div className="flex justify-end text-sm mt-3 underline" >
-                        <a>Detail</a>
-                    </div>
-                </div>
+            <div className="flex flex-col bg-slate-100 gap-5 px-5 py-5 lg:flex-row lg:px-10 lg:pb-10">
                 <div
                     title="Click for detail"
                     onClick={() => setDetailSum('Ready')}
@@ -4078,6 +4104,29 @@ export default function Dashboard() {
                         <div className="text-right">
                             <p className="text-slate-400 text-sm">Ready</p>
                             <h1 className="font-semibold">{_.sumBy(listData, 'ready')}</h1>
+                        </div>
+                    </div>
+                    <div className="flex justify-end text-sm mt-3 underline" >
+                        <a>Detail</a>
+                    </div>
+                </div>
+                <div
+                    title="Click for detail"
+                    className="bg-white cursor-pointer p-5 flex-1 rounded-md shadow-sm hover:translate-y-[-0.2em]"
+                    onClick={() => setDetailSum('Operating')}
+                >
+                    <h1 className="flex justify-between align-center">
+                        <span className="text-orange-400 font-semibold"><i className="fa-solid fa-user-clock text-orange-400"></i> Running </span>
+                        <span className="font-semibold text-xl text-orange-400">{listData.length ? (_.sumBy(listData, 'start_operasi') / (_.sumBy(listData, 'breakdown') + _.sumBy(listData, 'ready')) * 100).toFixed(2) : 0}%</span>
+                    </h1>
+                    <div className="my-1 flex justify-between">
+                        <div>
+                            <p className="text-slate-400 text-sm">Total Unit</p>
+                            <h1 className="font-semibold">{_.sumBy(listData, 'breakdown') + _.sumBy(listData, 'ready')}</h1>
+                        </div>
+                        <div className="text-right">
+                            <p className="text-slate-400 text-sm"> Running/Operating</p>
+                            <h1 className="font-semibold">{_.sumBy(listData, 'start_operasi')}</h1>
                         </div>
                     </div>
                     <div className="flex justify-end text-sm mt-3 underline" >
@@ -4109,7 +4158,7 @@ export default function Dashboard() {
                 </div>
                 <div
                     title="Click for detail"
-                    onClick={() => setDetailSum('Operator Status')}
+                    onClick={() => setDetailSum('Standby')}
                     className="bg-white cursor-pointer p-5 flex-1 rounded-md shadow-sm hover:translate-y-[-0.2em]"
                 >
                     <h1 className="flex justify-between align-center">
@@ -4132,14 +4181,18 @@ export default function Dashboard() {
                 </div>
             </div>
             <div className="p-10">
-                <h1 className="text-xl"><i className="fa-solid fa-book"></i> Detail  <span className="text-biru">{detailSum}</span></h1>
-            </div>
-            <div className="p-10">
-                <h1 className="text-xl"><i className="fa-solid fa-clipboard-list"></i> List Model </h1>
+                <h1 className="text-xl"><i className="fa-solid fa-clipboard-list"></i> List Model - <span className="text-sky-600">{listData.length} items</span></h1>
                 <div className="w-100 ">
-                    <Table data={listData} config={tConfig} />
+                    <Table data={listData} config={tConfig} el='tbymodel'/>
                 </div>
             </div>
+            <div className="p-10 pt-5" id="detail">
+                <h1 className="text-xl"><i className="fa-solid fa-book"></i> Detail  {detailSum} - <span className="text-sky-600"> {totalUnitDetail} items</span></h1>
+                <div className="w-100 ">
+                    <Table data={listFilteredUnitByStatus} config={tConfigAllUnit} el='tbystatus' />
+                </div>
+            </div>
+            
             <Footer />
         </>
     )
