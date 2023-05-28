@@ -3962,7 +3962,7 @@ export default function Dashboard() {
     const [listData, setListData] = useState([])
     const [tConfig, setTConfig] = useState(null)
     const [tConfigAllUnit, setTConfigAllunit] = useState(null)
-    const [detailSum, setDetailSum] = useState('Breakdown')
+    const [detailSum, setDetailSum] = useState(null)
     const [listAllUnit, setListAllUnit] = useState([])
     const [listFilteredUnitByStatus, setListFilteredUnitByStatus] = useState([])
     const [totalUnitDetail, setTotalUnitDetail] = useState(0)
@@ -4071,9 +4071,11 @@ export default function Dashboard() {
                 },
             ]
         })
-        setTimeout(() => {
-            window.location.href= '#detail'
-        },100)
+        if(detailSum != null){
+            setTimeout(() => {
+                window.location.href = '#detail' 
+            },100)
+        }
     }, [listFilteredUnitByStatus])
     // first load 
     useEffect(() => {
