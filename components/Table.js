@@ -14,3 +14,5 @@ export default function Table(props){
         <table id={el} className="datatablet"></table>
     )
 }
+
+// update repo github ko_rizki
