@@ -45,6 +45,10 @@ table>thead>tr>th{
 table>thead>tr{
   background: rgb(245,245,245)
 }
+.datatablet{
+  width: 100%;
+  overflow: auto;
+}
 .dataTables_length, .dataTables_filter{
   margin: 1em 0;
 }
